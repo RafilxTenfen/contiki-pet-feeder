@@ -62,7 +62,7 @@ char* getJsonConfig(struct Config config) {
 };
 
 char* getMessageConfig(struct Config config) {
-  char *msg = malloc (sizeof (char) * 1000);
+  char *msg = malloc (sizeof (char) * 400);
   sprintf(msg, "%d,%d,%d,%ld,%d,%d,%s", config.id,
     config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
     config.configuredPortionGrams, config.sizeGrams, config.animal);
@@ -236,13 +236,11 @@ PROCESS_THREAD(init_system_process, ev, data) {
   int j;
   for (j = 0; j < numberOfConfigs; j++) {
     Config currentConfig = configs[j];
-    // char *configMsg = getMessageConfig(currentConfig);
+    char *configMsg = getMessageConfig(currentConfig);
     debug_os("Sync send Config: %s", currentConfig.animal);
     // config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
     // config.configuredPortionGrams, config.sizeGrams, config.animal);
-    mqtt_sn_pub("/config", "%d,%d,%d,%ld,%d,%d,%s", currentConfig.id,
-      currentConfig.dispensedTimes, currentConfig.gramsAvailable, currentConfig.lastTimeDispensed,
-      currentConfig.configuredPortionGrams, currentConfig.sizeGrams, currentConfig.animal, true, 0);
+    mqtt_sn_pub("/config", configMsg, true, 0);
   }
 
   etimer_set(&time_poll, CLOCK_SECOND);
