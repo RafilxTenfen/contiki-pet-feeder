@@ -238,7 +238,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   while (1) {
 
-    for (int i = 0; i < 3; i++) {
+    int i = 0;
+    for (i = 0; i < 3; i++) {
       Config currentConfig = configs[i];
       if (currentConfig.seccondsToDispenseDecrement == 0) {
         if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
