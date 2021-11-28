@@ -1,9 +1,10 @@
-all: main_core
+all: sync_publisher
 PROJECT_SOURCEFILES += mqtt_sn.c
 
 WITH_UIP6=1
 UIP_CONF_IPV6=1
-CFLAGS+= -DUIP_CONF_IPV6_RPL -lcurl
+CFLAGS+= -DUIP_CONF_IPV6_RPL
+CFLAGS+= -lcurl
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
 # Adicionada estas duas linhas de flags para reduzir tamanho do firmware que não cabe no espaço de rom do msp430 que é utilizado na simulação
