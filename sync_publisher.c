@@ -39,7 +39,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <curl/curl.h>
+// #include <curl/curl.h>
+
+#include "/usr/include/curl/curl.h"
 #include <time.h>
 
 typedef struct Config {
