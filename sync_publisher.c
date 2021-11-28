@@ -62,7 +62,7 @@ char* getJsonConfig(struct Config config) {
 };
 
 char* getMessageConfig(struct Config config) {
-  char *msg = malloc (sizeof (char) * 10000);
+  char *msg = malloc (sizeof (char) * 1000);
   sprintf(msg, "%d,%d,%d,%ld,%d,%d,%s", config.id,
     config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
     config.configuredPortionGrams, config.sizeGrams, config.animal);
@@ -214,7 +214,7 @@ void init_broker(void) {
                      ss(all_topics),
                      mqtt_sn_callback);
 
-  // mqtt_sn_sub(topic_hw,0);
+  mqtt_sn_sub(topic_hw, 0);
 }
 
 /*---------------------------------------------------------------------------*/
