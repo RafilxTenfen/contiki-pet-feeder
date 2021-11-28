@@ -233,8 +233,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   etimer_set(&time_poll, CLOCK_SECOND);
 
-  int configSend = 0;
 
+  int configSend = 0;
   while(1) {
     PROCESS_WAIT_EVENT();
 

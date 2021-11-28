@@ -63,6 +63,7 @@ mqtt_sn_con_t mqtt_sn_connection;
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s", topic, message);
+  debug_os("DISPENSER ID: %d, Receive MSG: %s, Topic: %s", node_id, message, topic);
 
   char * idStr = strtok(message, ",");
   printf("\nMSG conf ID: %s", idStr);
@@ -76,6 +77,11 @@ void mqtt_sn_callback(char *topic, char *message){
 
   if (strcmp(topic, "/config") != 0) {
     printf("\n\nReceived Conf %s", message);
+    return;
+  }
+  if (strcmp(topic, "/dispensar") != 0) {
+    printf("\n\nIt`s going to dispense food %s", message);
+    debug_os("GO DISPENSER ID: %d, Receive MSG: %s, Topic: %s", node_id, message, topic);
     return;
   }
 }
@@ -130,7 +136,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   while(1) {
       PROCESS_WAIT_EVENT();
       sprintf(pub_test,"%s",topic_hw);
-      mqtt_sn_pub("/topic_1",pub_test,true,0);
+      // mqtt_sn_pub("/topic_1",pub_test,true,0);
       // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
       if (etimer_expired(&time_poll))
         etimer_reset(&time_poll);
