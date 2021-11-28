@@ -233,20 +233,26 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   Config* configs = createConfig();
 
-  int j;
-  for (j = 0; j < numberOfConfigs; j++) {
-    Config currentConfig = configs[j];
-    char *configMsg = getMessageConfig(currentConfig);
-    debug_os("Sync send Config: %s", currentConfig.animal);
-    // config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
-    // config.configuredPortionGrams, config.sizeGrams, config.animal);
-    mqtt_sn_pub("/config", configMsg, true, 0);
-  }
-
   etimer_set(&time_poll, CLOCK_SECOND);
+
+  int configSend = 0;
 
   while(1) {
     PROCESS_WAIT_EVENT();
+
+    if (configSend == 0) {
+      int j;
+      for (j = 0; j < numberOfConfigs; j++) {
+        Config currentConfig = configs[j];
+        char *configMsg = getMessageConfig(currentConfig);
+        debug_os("Sync send Config: %s", currentConfig.animal);
+        // config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
+        // config.configuredPortionGrams, config.sizeGrams, config.animal);
+        mqtt_sn_pub("/config", configMsg, true, 0);
+      }
+      configSend += 1;
+    }
+
     // sprintf(pub_test,"%s",topic_hw);
     // mqtt_sn_pub("/topic_1",pub_test,true,0);
     int i = 0;
