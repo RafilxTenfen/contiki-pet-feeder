@@ -69,7 +69,7 @@ void sendCurl(struct Config config) {
                                                                              --data '%s' \
                                                                              https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app", postthis);
   printf("\nLook command: %s", command);
-  system(command);
+  // system(command);
 }
 
 // void sendCurl(struct Config config) {
