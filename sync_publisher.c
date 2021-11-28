@@ -183,8 +183,6 @@ void mqtt_sn_callback(char *topic, char *message){
 }
 
 void init_broker(void) {
-  createConfig();
-
   char *all_topics[ss(topics_mqtt)+1];
   sprintf(device_id,"%02X%02X%02X%02X%02X%02X%02X%02X",
           linkaddr_node_addr.u8[0],linkaddr_node_addr.u8[1],
