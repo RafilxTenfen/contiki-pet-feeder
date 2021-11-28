@@ -1,4 +1,4 @@
-all: main_core
+all: sync_publisher.c
 PROJECT_SOURCEFILES += mqtt_sn.c
 
 WITH_UIP6=1
