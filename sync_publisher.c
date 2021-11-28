@@ -229,5 +229,33 @@ PROCESS_THREAD(init_system_process, ev, data) {
       etimer_reset(&time_poll);
     }
   }
+
+    while (1) {
+
+    for (int i = 0; i < numberOfConfigs; i++) {
+      Config currentConfig = configs[i];
+      if (currentConfig.seccondsToDispenseDecrement == 0) {
+        if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
+          printf("\n\nConfig id: %d doesn't have sufficient grams available %d to configured portion %d",
+            currentConfig.id, currentConfig.gramsAvailable, currentConfig.configuredPortionGrams);
+          currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
+          configs[i] = currentConfig;
+          continue;
+        }
+        currentConfig.dispensedTimes += 1;
+        currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
+        currentConfig.lastTimeDispensed = time(0);
+        currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
+        configs[i] = currentConfig;
+        sendCurl(currentConfig);
+        continue;
+      }
+      currentConfig.seccondsToDispenseDecrement -= 1;
+      configs[i] = currentConfig;
+    }
+    printf("\nPassed 1 second");
+    sleep(1);
+
+  }
   PROCESS_END();
 }
