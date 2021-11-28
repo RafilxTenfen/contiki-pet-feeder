@@ -227,17 +227,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   while(1) {
     PROCESS_WAIT_EVENT();
-    sprintf(pub_test,"%s",topic_hw);
-    mqtt_sn_pub("/topic_1",pub_test,true,0);
-
-    // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
-    if (etimer_expired(&time_poll)) {
-      etimer_reset(&time_poll);
-    }
-  }
-
-  while (1) {
-
+    // sprintf(pub_test,"%s",topic_hw);
+    // mqtt_sn_pub("/topic_1",pub_test,true,0);
     int i = 0;
     for (i = 0; i < 3; i++) {
       Config currentConfig = configs[i];
@@ -260,9 +251,19 @@ PROCESS_THREAD(init_system_process, ev, data) {
       currentConfig.seccondsToDispenseDecrement -= 1;
       configs[i] = currentConfig;
     }
-    printf("\nPassed 1 second");
-    sleep(1);
 
+    // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
+    if (etimer_expired(&time_poll)) {
+      etimer_reset(&time_poll);
+    }
   }
+
+  // while (1) {
+
+
+  //   printf("\nPassed 1 second");
+  //   sleep(1);
+
+  // }
   PROCESS_END();
 }
