@@ -214,14 +214,6 @@ void init_broker(void) {
                      ss(all_topics),
                      mqtt_sn_callback);
 
-  int j;
-  for (j = 0; j < numberOfConfigs; j++) {
-    Config currentConfig = configs[i];
-    char *configMsg = getMessageConfig(currentConfig);
-    debug_os("Sync send Config: %s", configMsg);
-    mqtt_sn_pub("/config", configMsg, true, 0);
-  }
-
   // mqtt_sn_sub(topic_hw,0);
 }
 
@@ -240,6 +232,15 @@ PROCESS_THREAD(init_system_process, ev, data) {
   debug_os("Node ID: %d, Device ID: %s, Secconds: %d", node_id, device_id, now);
 
   Config* configs = createConfig();
+
+  int j;
+  for (j = 0; j < numberOfConfigs; j++) {
+    Config currentConfig = configs[i];
+    char *configMsg = getMessageConfig(currentConfig);
+    debug_os("Sync send Config: %s", configMsg);
+    mqtt_sn_pub("/config", configMsg, true, 0);
+  }
+
   etimer_set(&time_poll, CLOCK_SECOND);
 
   while(1) {
