@@ -266,6 +266,9 @@ PROCESS_THREAD(init_system_process, ev, data) {
         currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
         configs[i] = currentConfig;
         sendCurl(currentConfig);
+        char *dispenserMsg = getMessageConfig(currentConfig);
+        debug_os("Sync send to dispense: %s", dispenserMsg);
+        mqtt_sn_pub("/dispensar", dispenserMsg, true, 0);
         continue;
       }
       currentConfig.seccondsToDispenseDecrement -= 1;
