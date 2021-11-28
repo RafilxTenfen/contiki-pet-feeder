@@ -61,6 +61,14 @@ char* getJsonConfig(struct Config config) {
   return (char *) postmsg;
 };
 
+char* getMessageConfig(struct Config config) {
+  char *msg = malloc (sizeof (char) * 10000);
+  sprintf(msg, "%d,%d,%d,%ld,%d,%d,%s", config.id,
+    config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
+    config.configuredPortionGrams, config.sizeGrams, config.animal);
+  return (char *) msg;
+};
+
 void sendCurl(struct Config config) {
   char *postthis = getJsonConfig(config);
   char *command = malloc (sizeof (char) * 10000);
@@ -68,7 +76,7 @@ void sendCurl(struct Config config) {
                                                                              --request POST \
                                                                              --data '%s' \
                                                                              https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app", postthis);
-  printf("\nLook command: %s", command);
+  debug_os("\ncurl command: %s", command);
   // system(command);
 }
 
@@ -128,7 +136,7 @@ void* createConfig() {
   configs = malloc(sizeof(struct Config) * numberOfConfigs);
   long now = 1638116931;
   struct Config dog = {
-    id: 1,
+    id: 3,
     dispensedTimes: 0,
     seccondsToDispense: 4,
     seccondsToDispenseDecrement: 4,
@@ -141,7 +149,7 @@ void* createConfig() {
   configs[0] = dog;
 
   struct Config cat = {
-    id: 2,
+    id: 4,
     dispensedTimes: 0,
     seccondsToDispense: 10,
     seccondsToDispenseDecrement: 10,
@@ -154,7 +162,7 @@ void* createConfig() {
   configs[1] = cat;
 
   struct Config cow = {
-    id: 3,
+    id: 5,
     dispensedTimes: 0,
     seccondsToDispense: 15,
     seccondsToDispenseDecrement: 15,
@@ -205,6 +213,15 @@ void init_broker(void) {
                      all_topics,
                      ss(all_topics),
                      mqtt_sn_callback);
+
+  int j;
+  for (j = 0; j < numberOfConfigs; j++) {
+    Config currentConfig = configs[i];
+    char *configMsg = getMessageConfig(currentConfig);
+    debug_os("Sync send Config: %s", configMsg);
+    mqtt_sn_pub("/config", configMsg, true, 0);
+  }
+
   // mqtt_sn_sub(topic_hw,0);
 }
 
@@ -234,7 +251,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
       Config currentConfig = configs[i];
       if (currentConfig.seccondsToDispenseDecrement == 0) {
         if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
-          printf("\n\nConfig id: %d doesn't have sufficient grams available %d to configured portion %d",
+          debug_os("\n\nConfig id: %d doesn't have sufficient grams available %d to configured portion %d",
             currentConfig.id, currentConfig.gramsAvailable, currentConfig.configuredPortionGrams);
           currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
           configs[i] = currentConfig;
