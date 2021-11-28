@@ -176,6 +176,7 @@ void* createConfig() {
   return configs;
 }
 
+Config* configs;
 
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
@@ -183,6 +184,8 @@ void mqtt_sn_callback(char *topic, char *message){
 }
 
 void init_broker(void) {
+  debug_os("Initializing init_broker the MQTT_SN_DEMO");
+  configs = createConfig();
   char *all_topics[ss(topics_mqtt)+1];
   sprintf(device_id,"%02X%02X%02X%02X%02X%02X%02X%02X",
           linkaddr_node_addr.u8[0],linkaddr_node_addr.u8[1],
@@ -225,13 +228,11 @@ AUTOSTART_PROCESSES(&init_system_process);
 PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
 
-  debug_os("Initializing the MQTT_SN_DEMO");
+  debug_os("Initializing PROCESS_THREAD the MQTT_SN_DEMO");
 
   init_broker();
   int now = clock_seconds();
   debug_os("Node ID: %d, Device ID: %s, Secconds: %d", node_id, device_id, now);
-
-  Config* configs = createConfig();
 
   etimer_set(&time_poll, CLOCK_SECOND);
 
