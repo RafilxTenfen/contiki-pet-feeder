@@ -123,6 +123,48 @@ static char     *topics_mqtt[] = {"/config",
 
 mqtt_sn_con_t mqtt_sn_connection;
 
+int numberOfConfigs = 3;
+
+struct Config configs[numberOfConfigs];
+struct Config dog = {
+  id: 1,
+  dispensedTimes: 0,
+  seccondsToDispense: 4,
+  seccondsToDispenseDecrement: 4,
+  gramsAvailable: 2500,
+  lastTimeDispensed: now,
+  configuredPortionGrams: 400,
+  sizeGrams: 3000,
+  animal: "Dog",
+};
+configs[0] = dog;
+
+struct Config cat = {
+  id: 2,
+  dispensedTimes: 0,
+  seccondsToDispense: 10,
+  seccondsToDispenseDecrement: 10,
+  gramsAvailable: 1500,
+  lastTimeDispensed: now,
+  configuredPortionGrams: 250,
+  sizeGrams: 3000,
+  animal: "Cat",
+};
+configs[1] = cat;
+
+struct Config cow = {
+  id: 3,
+  dispensedTimes: 0,
+  seccondsToDispense: 15,
+  seccondsToDispenseDecrement: 15,
+  gramsAvailable: 6000,
+  lastTimeDispensed: now,
+  configuredPortionGrams: 800,
+  sizeGrams: 10000,
+  animal: "Cow",
+};
+configs[2] = cow;
+
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s",topic,message);
@@ -175,47 +217,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   time_t now = time(0);
   printf("Node ID: %d, Device ID: %s, Secconds: %ld", node_id, device_id, now);
 
-  int numberOfConfigs = 3;
 
-  struct Config configs[numberOfConfigs];
-  struct Config dog = {
-    id: 1,
-    dispensedTimes: 0,
-    seccondsToDispense: 4,
-    seccondsToDispenseDecrement: 4,
-    gramsAvailable: 2500,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 400,
-    sizeGrams: 3000,
-    animal: "Dog",
-  };
-  configs[0] = dog;
-
-  struct Config cat = {
-    id: 2,
-    dispensedTimes: 0,
-    seccondsToDispense: 10,
-    seccondsToDispenseDecrement: 10,
-    gramsAvailable: 1500,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 250,
-    sizeGrams: 3000,
-    animal: "Cat",
-  };
-  configs[1] = cat;
-
-  struct Config cow = {
-    id: 3,
-    dispensedTimes: 0,
-    seccondsToDispense: 15,
-    seccondsToDispenseDecrement: 15,
-    gramsAvailable: 6000,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 800,
-    sizeGrams: 10000,
-    animal: "Cow",
-  };
-  configs[2] = cow;
 
   etimer_set(&time_poll, CLOCK_SECOND);
 
@@ -230,7 +232,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     }
   }
 
-    while (1) {
+  while (1) {
 
     for (int i = 0; i < numberOfConfigs; i++) {
       Config currentConfig = configs[i];
