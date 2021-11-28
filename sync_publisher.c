@@ -39,9 +39,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-// #include <curl/curl.h>
-
-// #include "/usr/include/curl/curl.h"
 #include <time.h>
 
 typedef struct Config {
@@ -240,7 +237,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   while (1) {
 
-    for (int i = 0; i < numberOfConfigs; i++) {
+    for (int i = 0; i < 3; i++) {
       Config currentConfig = configs[i];
       if (currentConfig.seccondsToDispenseDecrement == 0) {
         if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
