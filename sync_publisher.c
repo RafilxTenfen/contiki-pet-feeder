@@ -213,6 +213,8 @@ void init_broker(void) {
                      mqtt_sn_callback);
 
   mqtt_sn_sub(topic_hw, 0);
+  mqtt_sn_sub("/config", 0);
+  mqtt_sn_sub("/dispensar", 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -233,14 +235,13 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   etimer_set(&time_poll, CLOCK_SECOND);
 
-
   int configSend = 0;
   while(1) {
     PROCESS_WAIT_EVENT();
 
     if (configSend == 0) {
       int j;
-      for (j = 0; j < numberOfConfigs; j++) {
+      for (j = 0; j < 3; j++) {
         Config currentConfig = configs[j];
         char *configMsg = getMessageConfig(currentConfig);
         debug_os("Sync send Config: %s", currentConfig.animal);
