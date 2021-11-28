@@ -41,7 +41,7 @@
 #include <stdlib.h>
 // #include <curl/curl.h>
 
-#include "/usr/include/curl/curl.h"
+// #include "/usr/include/curl/curl.h"
 #include <time.h>
 
 typedef struct Config {
@@ -65,36 +65,47 @@ char* getJsonConfig(struct Config config) {
 };
 
 void sendCurl(struct Config config) {
-  CURL *curl;
-  CURLcode res;
-  struct curl_slist *slist1;
-
-  /* In windows, this will init the winsock stuff */
-  curl_global_init(CURL_GLOBAL_ALL);
-
-  slist1 = NULL;
-  slist1 = curl_slist_append(slist1, "Content-Type: application/json");
-  curl = curl_easy_init();
-  if (curl) {
-    char *postthis = getJsonConfig(config);
-    printf("\n Sending POST: %s \n", postthis);
-    curl_easy_setopt(curl, CURLOPT_URL, "https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app");
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postthis);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)strlen(postthis));
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist1);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.74.0");
-    curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, (long)CURL_HTTP_VERSION_2TLS);
-    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
-
-    res = curl_easy_perform(curl);
-    if (res != CURLE_OK) {
-      fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-    }
-
-    curl_easy_cleanup(curl);
-    curl_slist_free_all(slist1);
-  }
+  char *postthis = getJsonConfig(config);
+  char *command = malloc (sizeof (char) * 10000);
+  sprintf(command, "curl --header \"Content-Type: application/json\" \
+                                                                             --request POST \
+                                                                             --data '%s' \
+                                                                             https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app", postthis);
+  printf("Look command: %s", command);
+  system(command);
 }
+
+// void sendCurl(struct Config config) {
+//   CURL *curl;
+//   CURLcode res;
+//   struct curl_slist *slist1;
+
+//   /* In windows, this will init the winsock stuff */
+//   curl_global_init(CURL_GLOBAL_ALL);
+
+//   slist1 = NULL;
+//   slist1 = curl_slist_append(slist1, "Content-Type: application/json");
+//   curl = curl_easy_init();
+//   if (curl) {
+//     char *postthis = getJsonConfig(config);
+//     printf("\n Sending POST: %s \n", postthis);
+//     curl_easy_setopt(curl, CURLOPT_URL, "https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app");
+//     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postthis);
+//     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)strlen(postthis));
+//     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist1);
+//     curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.74.0");
+//     curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, (long)CURL_HTTP_VERSION_2TLS);
+//     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
+
+//     res = curl_easy_perform(curl);
+//     if (res != CURLE_OK) {
+//       fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+//     }
+
+//     curl_easy_cleanup(curl);
+//     curl_slist_free_all(slist1);
+//   }
+// }
 
 static uint16_t udp_port = 1884;
 static uint16_t keep_alive = 5;
