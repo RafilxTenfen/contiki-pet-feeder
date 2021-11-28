@@ -220,7 +220,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   init_broker();
   int now = clock_seconds();
-  printf("Node ID: %d, Device ID: %s, Secconds: %d", node_id, device_id, now);
+  debug_os("Node ID: %d, Device ID: %s, Secconds: %d", node_id, device_id, now);
 
   Config* configs = createConfig();
   etimer_set(&time_poll, CLOCK_SECOND);
