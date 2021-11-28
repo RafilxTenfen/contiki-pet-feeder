@@ -123,7 +123,7 @@ static char     *topics_mqtt[] = {"/config",
 
 mqtt_sn_con_t mqtt_sn_connection;
 
-static int numberOfConfigs = 3;
+#define numberOfConfigs 3
 
 struct Config configs[numberOfConfigs];
 time_t now = time(0);
