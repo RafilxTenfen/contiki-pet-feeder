@@ -122,10 +122,11 @@ mqtt_sn_con_t mqtt_sn_connection;
 
 #define numberOfConfigs 3
 
-struct Config configs[numberOfConfigs];
-time_t now = time(0);
 
-void createConfig() {
+void* createConfig() {
+  struct Config* configs;
+  configs = malloc(sizeof(struct Config) * numberOfConfigs);
+  time_t now = time(0);
   struct Config dog = {
     id: 1,
     dispensedTimes: 0,
@@ -164,7 +165,9 @@ void createConfig() {
     animal: "Cow",
   };
   configs[2] = cow;
+  return configs;
 }
+
 
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
@@ -217,11 +220,9 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   init_broker();
 
+  printf("Node ID: %d, Device ID: %s, Secconds: %ld", node_id, device_id, time(0));
 
-  printf("Node ID: %d, Device ID: %s, Secconds: %ld", node_id, device_id, now);
-
-
-
+  Config* configs = createConfig();
   etimer_set(&time_poll, CLOCK_SECOND);
 
   while(1) {
