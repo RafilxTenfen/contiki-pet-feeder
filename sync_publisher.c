@@ -126,7 +126,7 @@ mqtt_sn_con_t mqtt_sn_connection;
 void* createConfig() {
   struct Config* configs;
   configs = malloc(sizeof(struct Config) * numberOfConfigs);
-  time_t now = time(0);
+  long now = 1638116931;
   struct Config dog = {
     id: 1,
     dispensedTimes: 0,
@@ -219,8 +219,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
   debug_os("Initializing the MQTT_SN_DEMO");
 
   init_broker();
-
-  printf("Node ID: %d, Device ID: %s, Secconds: %ld", node_id, device_id, time(0));
+  int now = clock_seconds();
+  printf("Node ID: %d, Device ID: %s, Secconds: %ld", node_id, device_id, now);
 
   Config* configs = createConfig();
   etimer_set(&time_poll, CLOCK_SECOND);
@@ -250,7 +250,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
         }
         currentConfig.dispensedTimes += 1;
         currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
-        currentConfig.lastTimeDispensed = time(0);
+        currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
         currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
         configs[i] = currentConfig;
         sendCurl(currentConfig);
