@@ -236,9 +236,13 @@ PROCESS_THREAD(init_system_process, ev, data) {
   int j;
   for (j = 0; j < numberOfConfigs; j++) {
     Config currentConfig = configs[j];
-    char *configMsg = getMessageConfig(currentConfig);
-    debug_os("Sync send Config: %s", configMsg);
-    mqtt_sn_pub("/config", configMsg, true, 0);
+    // char *configMsg = getMessageConfig(currentConfig);
+    debug_os("Sync send Config: %s", currentConfig.animal);
+    // config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
+    // config.configuredPortionGrams, config.sizeGrams, config.animal);
+    mqtt_sn_pub("/config", "%d,%d,%d,%ld,%d,%d,%s", currentConfig.id,
+      currentConfig.dispensedTimes, currentConfig.gramsAvailable, currentConfig.lastTimeDispensed,
+      currentConfig.configuredPortionGrams, currentConfig.sizeGrams, currentConfig.animal, true, 0);
   }
 
   etimer_set(&time_poll, CLOCK_SECOND);
