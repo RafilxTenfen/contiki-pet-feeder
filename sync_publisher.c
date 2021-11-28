@@ -235,7 +235,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   int j;
   for (j = 0; j < numberOfConfigs; j++) {
-    Config currentConfig = configs[i];
+    Config currentConfig = configs[j];
     char *configMsg = getMessageConfig(currentConfig);
     debug_os("Sync send Config: %s", configMsg);
     mqtt_sn_pub("/config", configMsg, true, 0);
