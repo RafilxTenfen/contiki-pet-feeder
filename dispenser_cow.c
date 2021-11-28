@@ -35,64 +35,9 @@
 #include "dev/leds.h"
 #include "net/rime/rime.h"
 #include "net/ip/uip.h"
-#include "sys/node-id.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <curl/curl.h>
-#include <time.h>
-
-typedef struct Config {
-  int id;
-  int dispensedTimes;
-  int seccondsToDispense;
-  int seccondsToDispenseDecrement;
-  int gramsAvailable;
-  time_t lastTimeDispensed;
-  int configuredPortionGrams;
-  int sizeGrams;
-  char* animal;
-} Config;
-
-char* getJsonConfig(struct Config config) {
-  char *postmsg = malloc (sizeof (char) * 10000);
-  sprintf(postmsg, "{\n \"id\": \"%d\",\n \"dispensedTimes\": %d,\n \"gramsAvailable\": %d,\n \"lastTimeDispensed\": \"%ld\",\n \"configuredPortionGrams\": %d,\n \"sizeGrams\": %d,\n \"animal\": \"%s\"\n}", config.id,
-    config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
-    config.configuredPortionGrams, config.sizeGrams, config.animal);
-  return (char *) postmsg;
-};
-
-void sendCurl(struct Config config) {
-  CURL *curl;
-  CURLcode res;
-  struct curl_slist *slist1;
-
-  /* In windows, this will init the winsock stuff */
-  curl_global_init(CURL_GLOBAL_ALL);
-
-  slist1 = NULL;
-  slist1 = curl_slist_append(slist1, "Content-Type: application/json");
-  curl = curl_easy_init();
-  if (curl) {
-    char *postthis = getJsonConfig(config);
-    printf("\n Sending POST: %s \n", postthis);
-    curl_easy_setopt(curl, CURLOPT_URL, "https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app");
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postthis);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)strlen(postthis));
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist1);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.74.0");
-    curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, (long)CURL_HTTP_VERSION_2TLS);
-    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
-
-    res = curl_easy_perform(curl);
-    if (res != CURLE_OK) {
-      fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-    }
-
-    curl_easy_cleanup(curl);
-    curl_slist_free_all(slist1);
-  }
-}
 
 static uint16_t udp_port = 1884;
 static uint16_t keep_alive = 5;
@@ -115,7 +60,7 @@ void mqtt_sn_callback(char *topic, char *message){
   printf("\nTopic:%s Message:%s",topic,message);
 }
 
-void init_broker(void) {
+void init_broker(void){
   char *all_topics[ss(topics_mqtt)+1];
   sprintf(device_id,"%02X%02X%02X%02X%02X%02X%02X%02X",
           linkaddr_node_addr.u8[0],linkaddr_node_addr.u8[1],
@@ -144,13 +89,15 @@ void init_broker(void) {
                      all_topics,
                      ss(all_topics),
                      mqtt_sn_callback);
-  // mqtt_sn_sub(topic_hw,0);
+  mqtt_sn_sub(topic_hw,0);
 }
 
 /*---------------------------------------------------------------------------*/
 PROCESS(init_system_process, "[Contiki-OS] Initializing OS");
 AUTOSTART_PROCESSES(&init_system_process);
 /*---------------------------------------------------------------------------*/
+
+typedef struct config
 
 PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
@@ -159,62 +106,15 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   init_broker();
 
-  time_t now = time(0);
-  printf("Node ID: %d, Device ID: %s, Secconds: %ld", node_id, device_id, now);
-
-  int numberOfConfigs = 3;
-
-  struct Config configs[numberOfConfigs];
-  struct Config dog = {
-    id: 1,
-    dispensedTimes: 0,
-    seccondsToDispense: 4,
-    seccondsToDispenseDecrement: 4,
-    gramsAvailable: 2500,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 400,
-    sizeGrams: 3000,
-    animal: "Dog",
-  };
-  configs[0] = dog;
-
-  struct Config cat = {
-    id: 2,
-    dispensedTimes: 0,
-    seccondsToDispense: 10,
-    seccondsToDispenseDecrement: 10,
-    gramsAvailable: 1500,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 250,
-    sizeGrams: 3000,
-    animal: "Cat",
-  };
-  configs[1] = cat;
-
-  struct Config cow = {
-    id: 3,
-    dispensedTimes: 0,
-    seccondsToDispense: 15,
-    seccondsToDispenseDecrement: 15,
-    gramsAvailable: 6000,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 800,
-    sizeGrams: 10000,
-    animal: "Cow",
-  };
-  configs[2] = cow;
-
   etimer_set(&time_poll, CLOCK_SECOND);
 
   while(1) {
-    PROCESS_WAIT_EVENT();
-    sprintf(pub_test,"%s",topic_hw);
-    mqtt_sn_pub("/topic_1",pub_test,true,0);
-
-    // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
-    if (etimer_expired(&time_poll)) {
-      etimer_reset(&time_poll);
-    }
+      PROCESS_WAIT_EVENT();
+      sprintf(pub_test,"%s",topic_hw);
+      mqtt_sn_pub("/topic_1",pub_test,true,0);
+      // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
+      if (etimer_expired(&time_poll))
+        etimer_reset(&time_poll);
   }
   PROCESS_END();
 }
