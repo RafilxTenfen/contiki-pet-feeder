@@ -115,7 +115,7 @@ void sendCurl(struct Config config) {
 static uint16_t udp_port = 1884;
 static uint16_t keep_alive = 5;
 static uint16_t broker_address[] = {0xaaaa, 0, 0, 0, 0, 0, 0, 0x1};
-static struct   etimer time_poll;
+static struct   etimer periodic_timer;
 // static uint16_t tick_process = 0;
 static char     pub_test[20];
 static char     device_id[17];
@@ -238,7 +238,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
   int configSend = 0;
   while(1) {
-
+    PROCESS_WAIT_EVENT(etimer_expired(&periodic_timer));
     if (configSend == 0) {
       int j;
       for (j = 0; j < 3; j++) {
@@ -280,8 +280,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
       configs[i] = currentConfig;
     }
 
-    etimer_set(&time_poll, CLOCK_SECOND);
-    PROCESS_WAIT_EVENT(etimer_expired(&periodic_timer));
+    etimer_set(&periodic_timer, CLOCK_SECOND * 1);
   }
 
   // while (1) {
