@@ -40,6 +40,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include "dev/leds.h"
 
 static uint16_t udp_port = 1884;
 static uint16_t keep_alive = 5;
@@ -66,6 +67,7 @@ void mqtt_sn_callback(char *topic, char *message){
   printf("\nTopic:%s Message:%s", topic, message);
   debug_os("DISPENSER ID: %d, Receive MSG: %s, Topic: %s", node_id, message, topic);
 
+  leds_on(LEDS_ALL);
 
   if (strcmp(topic, "/config") != 0 && strcmp(topic, "/dispensar") != 0) {
     debug_os("IS NOT CONFIG OR DISPENSAR");
