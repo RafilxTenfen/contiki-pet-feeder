@@ -238,7 +238,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
   int configSend = 0;
   while(1) {
-    PROCESS_WAIT_EVENT(etimer_expired(&periodic_timer));
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
     if (configSend == 0) {
       int j;
       for (j = 0; j < 3; j++) {
