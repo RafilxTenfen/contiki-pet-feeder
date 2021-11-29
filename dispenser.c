@@ -46,7 +46,7 @@ static uint16_t keep_alive = 5;
 static uint16_t broker_address[] = {0xaaaa, 0, 0, 0, 0, 0, 0, 0x1};
 static struct   etimer time_poll;
 // static uint16_t tick_process = 0;
-static char     pub_test[20];
+// static char     pub_test[20];
 static char     device_id[17];
 static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
