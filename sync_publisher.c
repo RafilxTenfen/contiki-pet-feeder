@@ -228,30 +228,26 @@ AUTOSTART_PROCESSES(&init_system_process);
 PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
 
-  debug_os("Initializing PROCESS_THREAD the MQTT_SN_DEMO");
-  configs = createConfig();
+  debug_os("Initializing SYNC PROCESS_THREAD the MQTT_SN_DEMO");
+  struct Config* configs = createConfig();
   init_broker();
-  int now = clock_seconds();
-  debug_os("Node ID: %d, Device ID: %s, Secconds: %d", node_id, device_id, now);
+  debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
 
   etimer_set(&periodic_timer, 10*CLOCK_SECOND);
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-  int configSend = 0;
+
+  int j;
+  for (j = 0; j < 3; j++) {
+    Config currentConfig = configs[j];
+    char *configMsg = getMessageConfig(currentConfig);
+    debug_os("Sync send Config: %s", currentConfig.animal);
+    // config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
+    // config.configuredPortionGrams, config.sizeGrams, config.animal);
+    mqtt_sn_pub("/config", configMsg, true, 0);
+  }
+
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-    if (configSend == 0) {
-      int j;
-      for (j = 0; j < 3; j++) {
-        Config currentConfig = configs[j];
-        char *configMsg = getMessageConfig(currentConfig);
-        debug_os("Sync send Config: %s", currentConfig.animal);
-        // config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
-        // config.configuredPortionGrams, config.sizeGrams, config.animal);
-        mqtt_sn_pub("/config", configMsg, true, 0);
-      }
-      configSend += 1;
-    }
-
     // sprintf(pub_test,"%s",topic_hw);
     // mqtt_sn_pub("/topic_1",pub_test,true,0);
     int i = 0;
