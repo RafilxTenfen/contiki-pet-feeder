@@ -176,8 +176,6 @@ void* createConfig() {
   return configs;
 }
 
-Config* configs;
-
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s",topic,message);
