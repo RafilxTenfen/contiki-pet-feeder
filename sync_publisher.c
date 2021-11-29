@@ -121,7 +121,9 @@ static struct   etimer periodic_timer;
 static char     device_id[17];
 static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
-                                  "/dispensar"};
+                                  "/dispensar",
+                                  "/topic_1"};
+static struct Config* configs;
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
@@ -206,16 +208,16 @@ void init_broker(void) {
   size_t i;
   for(i=0;i<ss(topics_mqtt);i++)
     all_topics[i] = topics_mqtt[i];
-  // all_topics[i] = topic_hw;
+  all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
                      all_topics,
                      ss(all_topics),
                      mqtt_sn_callback);
 
-  // mqtt_sn_sub(topic_hw, 0);
-  mqtt_sn_sub("/config", 0);
-  mqtt_sn_sub("/dispensar", 0);
+  mqtt_sn_sub(topic_hw, 0);
+  // mqtt_sn_sub("/config", 0);
+  // mqtt_sn_sub("/dispensar", 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -224,16 +226,15 @@ AUTOSTART_PROCESSES(&init_system_process);
 /*---------------------------------------------------------------------------*/
 
 PROCESS_THREAD(init_system_process, ev, data) {
-  struct Config* configs;
-  configs = createConfig();
-
   PROCESS_BEGIN();
+  configs = createConfig();
 
   debug_os("Initializing SYNC PROCESS_THREAD the MQTT_SN_DEMO");
   init_broker();
   debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
 
   etimer_set(&periodic_timer, 5*CLOCK_SECOND);
+
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
 
   debug_os("Node ID: %d, Will send config", node_id);
@@ -249,6 +250,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
   debug_os("Node ID: %d, Finish sending config", node_id);
 
   while(1) {
+    PROCESS_WAIT_EVENT();
+    etimer_set(&periodic_timer, 1 * CLOCK_SECOND);
     debug_os("Node ID: %d, Init While", node_id);
     // sprintf(pub_test,"%s",topic_hw);
     // mqtt_sn_pub("/topic_1",pub_test,true,0);
@@ -271,14 +274,13 @@ PROCESS_THREAD(init_system_process, ev, data) {
         sendCurl(currentConfig);
         char *dispenserMsg = getMessageConfig(currentConfig);
         debug_os("Sync send to dispense: %s", dispenserMsg);
-        mqtt_sn_pub("/dispensar", dispenserMsg, true, 0);
+        mqtt_sn_pub("/dispensar", dispenserMsg, false, 0);
         continue;
       }
       currentConfig.seccondsToDispenseDecrement -= 1;
       configs[i] = currentConfig;
     }
 
-    etimer_set(&periodic_timer, CLOCK_SECOND * 1);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
     debug_os("Node ID: %d, Finish While", node_id);
   }

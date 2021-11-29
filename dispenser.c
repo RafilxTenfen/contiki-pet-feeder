@@ -46,11 +46,12 @@ static uint16_t keep_alive = 5;
 static uint16_t broker_address[] = {0xaaaa, 0, 0, 0, 0, 0, 0, 0x1};
 static struct   etimer time_poll;
 // static uint16_t tick_process = 0;
-// static char     pub_test[20];
+static char     pub_test[20];
 static char     device_id[17];
 static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
-                                  "/dispensar"};
+                                  "/dispensar",
+                                  "/topic_1"};
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
@@ -64,6 +65,12 @@ void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s", topic, message);
   debug_os("DISPENSER ID: %d, Receive MSG: %s, Topic: %s", node_id, message, topic);
+
+
+  if (strcmp(topic, "/config") != 0 && strcmp(topic, "/dispensar") != 0) {
+    debug_os("IS NOT CONFIG OR DISPENSAR");
+    return;
+  }
 
   char * idStr = strtok(message, ",");
   printf("\nMSG conf ID: %s", idStr);
@@ -110,14 +117,14 @@ void init_broker(void) {
   size_t i;
   for(i=0;i<ss(topics_mqtt);i++)
     all_topics[i] = topics_mqtt[i];
-  // all_topics[i] = topic_hw;
+  all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
                      all_topics,
                      ss(all_topics),
                      mqtt_sn_callback);
 
-  // mqtt_sn_sub(topic_hw, 0);
+  mqtt_sn_sub(topic_hw, 0);
   mqtt_sn_sub("/config", 0);
   mqtt_sn_sub("/dispensar", 0);
 }
@@ -138,9 +145,9 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&time_poll));
-    // sprintf(pub_test,"%s",topic_hw);
-    // mqtt_sn_pub("/topic_1",pub_test,true,0);
-    // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
+    sprintf(pub_test,"%s",topic_hw);
+    mqtt_sn_pub("/topic_1",pub_test,true,0);
+    debug_os("State MQTT:%s",mqtt_sn_check_status_string());
     etimer_set(&time_poll, CLOCK_SECOND * 1);
   }
   PROCESS_END();
