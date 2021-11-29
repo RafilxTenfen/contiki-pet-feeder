@@ -224,10 +224,12 @@ AUTOSTART_PROCESSES(&init_system_process);
 /*---------------------------------------------------------------------------*/
 
 PROCESS_THREAD(init_system_process, ev, data) {
+  struct Config* configs;
+  configs = createConfig();
+
   PROCESS_BEGIN();
 
   debug_os("Initializing SYNC PROCESS_THREAD the MQTT_SN_DEMO");
-  struct Config* configs = createConfig();
   init_broker();
   debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
 
