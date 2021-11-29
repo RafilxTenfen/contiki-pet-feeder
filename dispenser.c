@@ -94,6 +94,7 @@ void init_broker(void) {
           linkaddr_node_addr.u8[4],linkaddr_node_addr.u8[5],
           linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
   sprintf(topic_hw,"Hello addr:%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
+  debug_os("DISPENSER Initializing init_broker the MQTT_SN_DEMO, %s", topic_hw);
 
   mqtt_sn_connection.client_id     = device_id;
   mqtt_sn_connection.udp_port      = udp_port;
@@ -109,16 +110,16 @@ void init_broker(void) {
   size_t i;
   for(i=0;i<ss(topics_mqtt);i++)
     all_topics[i] = topics_mqtt[i];
-  all_topics[i] = topic_hw;
+  // all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
                      all_topics,
                      ss(all_topics),
                      mqtt_sn_callback);
 
-  mqtt_sn_sub(topic_hw, 0);
-  mqtt_sn_sub("/config", 1);
-  mqtt_sn_sub("/dispensar", 2);
+  // mqtt_sn_sub(topic_hw, 0);
+  mqtt_sn_sub("/config", 0);
+  mqtt_sn_sub("/dispensar", 0);
 }
 
 /*---------------------------------------------------------------------------*/

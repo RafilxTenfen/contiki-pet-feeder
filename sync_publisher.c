@@ -182,7 +182,6 @@ void mqtt_sn_callback(char *topic, char *message){
 }
 
 void init_broker(void) {
-  debug_os("Initializing init_broker the MQTT_SN_DEMO");
 
   char *all_topics[ss(topics_mqtt)+1];
   sprintf(device_id,"%02X%02X%02X%02X%02X%02X%02X%02X",
@@ -191,6 +190,7 @@ void init_broker(void) {
           linkaddr_node_addr.u8[4],linkaddr_node_addr.u8[5],
           linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
   sprintf(topic_hw,"Hello addr:%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
+  debug_os("SYNC Initializing init_broker the MQTT_SN_DEMO, %s", topic_hw);
 
   mqtt_sn_connection.client_id     = device_id;
   mqtt_sn_connection.udp_port      = udp_port;
@@ -206,16 +206,16 @@ void init_broker(void) {
   size_t i;
   for(i=0;i<ss(topics_mqtt);i++)
     all_topics[i] = topics_mqtt[i];
-  all_topics[i] = topic_hw;
+  // all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
                      all_topics,
                      ss(all_topics),
                      mqtt_sn_callback);
 
-  mqtt_sn_sub(topic_hw, 0);
-  mqtt_sn_sub("/config", 1);
-  mqtt_sn_sub("/dispensar", 2);
+  // mqtt_sn_sub(topic_hw, 0);
+  mqtt_sn_sub("/config", 0);
+  mqtt_sn_sub("/dispensar", 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -231,9 +231,10 @@ PROCESS_THREAD(init_system_process, ev, data) {
   init_broker();
   debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
 
-  etimer_set(&periodic_timer, 10*CLOCK_SECOND);
+  etimer_set(&periodic_timer, 5*CLOCK_SECOND);
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
 
+  debug_os("Node ID: %d, Will send config", node_id);
   int j;
   for (j = 0; j < 3; j++) {
     Config currentConfig = configs[j];
@@ -243,9 +244,10 @@ PROCESS_THREAD(init_system_process, ev, data) {
     // config.configuredPortionGrams, config.sizeGrams, config.animal);
     mqtt_sn_pub("/config", configMsg, true, 0);
   }
+  debug_os("Node ID: %d, Finish sending config", node_id);
 
   while(1) {
-    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
+    debug_os("Node ID: %d, Init While", node_id);
     // sprintf(pub_test,"%s",topic_hw);
     // mqtt_sn_pub("/topic_1",pub_test,true,0);
     int i = 0;
@@ -275,6 +277,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
     }
 
     etimer_set(&periodic_timer, CLOCK_SECOND * 1);
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
+    debug_os("Node ID: %d, Finish While", node_id);
   }
 
   // while (1) {
