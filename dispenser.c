@@ -125,8 +125,8 @@ void init_broker(void) {
                      mqtt_sn_callback);
 
   mqtt_sn_sub(topic_hw, 0);
-  mqtt_sn_sub("/config", 0);
-  mqtt_sn_sub("/dispensar", 0);
+  // mqtt_sn_sub("/config", 0);
+  // mqtt_sn_sub("/dispensar", 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -147,8 +147,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&time_poll));
     sprintf(pub_test,"%s",topic_hw);
     mqtt_sn_pub("/topic_1",pub_test,true,0);
-    debug_os("State MQTT:%s",mqtt_sn_check_status_string());
-    etimer_set(&time_poll, CLOCK_SECOND * 1);
+    debug_os("State MQTT - :%s",mqtt_sn_check_status_string());
+    etimer_set(&time_poll, CLOCK_SECOND * 100);
   }
   PROCESS_END();
 }
