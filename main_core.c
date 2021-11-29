@@ -62,6 +62,7 @@ mqtt_sn_con_t mqtt_sn_connection;
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s",topic,message);
+  debug_os("MAIN ID: %d, Receive MSG: %s, Topic: %s", node_id, message, topic);
 }
 
 void init_broker(void){

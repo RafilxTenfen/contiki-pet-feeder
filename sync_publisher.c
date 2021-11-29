@@ -250,7 +250,6 @@ PROCESS_THREAD(init_system_process, ev, data) {
   debug_os("Node ID: %d, Finish sending config", node_id);
 
   while(1) {
-    PROCESS_WAIT_EVENT();
     etimer_set(&periodic_timer, 1 * CLOCK_SECOND);
     debug_os("Node ID: %d, Init While", node_id);
     // sprintf(pub_test,"%s",topic_hw);
