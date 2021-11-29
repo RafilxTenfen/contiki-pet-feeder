@@ -35,6 +35,7 @@
 #include "dev/leds.h"
 #include "net/rime/rime.h"
 #include "net/ip/uip.h"
+#include "sys/node-id.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
