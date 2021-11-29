@@ -185,7 +185,7 @@ void mqtt_sn_callback(char *topic, char *message){
 
 void init_broker(void) {
   debug_os("Initializing init_broker the MQTT_SN_DEMO");
-  configs = createConfig();
+
   char *all_topics[ss(topics_mqtt)+1];
   sprintf(device_id,"%02X%02X%02X%02X%02X%02X%02X%02X",
           linkaddr_node_addr.u8[0],linkaddr_node_addr.u8[1],
@@ -221,7 +221,7 @@ void init_broker(void) {
 }
 
 /*---------------------------------------------------------------------------*/
-PROCESS(init_system_process, "[Contiki-OS] Initializing OS");
+PROCESS(init_system_process, "[Contiki-OS] Initializing Sync node");
 AUTOSTART_PROCESSES(&init_system_process);
 /*---------------------------------------------------------------------------*/
 
@@ -229,16 +229,15 @@ PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
 
   debug_os("Initializing PROCESS_THREAD the MQTT_SN_DEMO");
-
+  configs = createConfig();
   init_broker();
   int now = clock_seconds();
   debug_os("Node ID: %d, Device ID: %s, Secconds: %d", node_id, device_id, now);
 
-  etimer_set(&time_poll, CLOCK_SECOND);
-
+  etimer_set(&periodic_timer, 10*CLOCK_SECOND);
+  PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
   int configSend = 0;
   while(1) {
-    PROCESS_WAIT_EVENT();
 
     if (configSend == 0) {
       int j;
@@ -281,10 +280,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
       configs[i] = currentConfig;
     }
 
-    // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
-    if (etimer_expired(&time_poll)) {
-      etimer_reset(&time_poll);
-    }
+    etimer_set(&time_poll, CLOCK_SECOND);
+    PROCESS_WAIT_EVENT(etimer_expired(&periodic_timer));
   }
 
   // while (1) {
