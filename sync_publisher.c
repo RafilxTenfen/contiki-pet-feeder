@@ -132,8 +132,8 @@ mqtt_sn_con_t mqtt_sn_connection;
 
 
 void* createConfig() {
-  struct Config* configs;
-  configs = malloc(sizeof(struct Config) * numberOfConfigs);
+  struct Config* allConfigs;
+  allConfigs = malloc(sizeof(struct Config) * numberOfConfigs);
   long now = 1638116931;
   struct Config dog = {
     id: 3,
@@ -146,7 +146,7 @@ void* createConfig() {
     sizeGrams: 3000,
     animal: "Dog",
   };
-  configs[0] = dog;
+  allConfigs[0] = dog;
 
   struct Config cat = {
     id: 4,
@@ -159,7 +159,7 @@ void* createConfig() {
     sizeGrams: 3000,
     animal: "Cat",
   };
-  configs[1] = cat;
+  allConfigs[1] = cat;
 
   struct Config cow = {
     id: 5,
@@ -172,8 +172,8 @@ void* createConfig() {
     sizeGrams: 10000,
     animal: "Cow",
   };
-  configs[2] = cow;
-  return configs;
+  allConfigs[2] = cow;
+  return allConfigs;
 }
 
 void mqtt_sn_callback(char *topic, char *message){
