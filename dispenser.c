@@ -67,7 +67,7 @@ void mqtt_sn_callback(char *topic, char *message){
 
   char * idStr = strtok(message, ",");
   printf("\nMSG conf ID: %s", idStr);
-  int currentNodeId = atoi(node_id);
+  int currentNodeId = (int) node_id;
   int id = atoi(idStr);
 
   if (id != currentNodeId) {
