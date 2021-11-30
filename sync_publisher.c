@@ -211,7 +211,7 @@ void init_broker(void) {
 
   mqtt_sn_create_sck(mqtt_sn_connection,
                      all_topics,
-                     ss(all_topics),
+                     4,
                      mqtt_sn_callback);
 
   mqtt_sn_sub(topic_hw, 0);
@@ -241,7 +241,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     Config currentConfig = configs[j];
     char *configMsg = getMessageConfig(currentConfig);
     debug_os("Sync send Config: %s", currentConfig.animal);
-    mqtt_sn_pub("/config", configMsg, true, 0);
+    mqtt_sn_pub_send("/config", configMsg, 0);
   }
   debug_os("Node ID: %d, Finish sending config", node_id);
 
@@ -270,7 +270,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
         // sendCurl(currentConfig);
         char *dispenserMsg = getMessageConfig(currentConfig);
         debug_os("Sync send to dispense: %s", dispenserMsg);
-        mqtt_sn_pub("/dispensar", dispenserMsg, false, 0);
+        mqtt_sn_pub_send("/dispensar", dispenserMsg, 0);
         continue;
       }
       currentConfig.seccondsToDispenseDecrement -= 1;
