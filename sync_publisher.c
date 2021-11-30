@@ -247,7 +247,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   debug_os("Node ID: %d, Finish sending config", node_id);
 
   while(1) {
-    etimer_set(&periodic_timer, 40*CLOCK_SECOND);
+    etimer_set(&periodic_timer, 1*CLOCK_SECOND);
     // debug_os("Node ID: %d, Init While", node_id);
     // PROCESS_WAIT_EVENT();
     // sprintf(pub_test,"%s",topic_hw);
@@ -279,7 +279,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     }
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-    // debug_os("Node ID: %d, Finish While", node_id);
+    debug_os("Node ID: %d, Finish While", node_id);
   }
 
   // while (1) {
