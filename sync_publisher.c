@@ -257,27 +257,27 @@ PROCESS_THREAD(init_system_process, ev, data) {
     int i = 0;
     for (i = 0; i < 3; i++) {
       Config currentConfig = configs[i];
-      // if (currentConfig.seccondsToDispenseDecrement == 0) {
-      //   if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
-      //     debug_os("\n\nConfig id: %d doesn't have sufficient grams available %d to configured portion %d",
-      //       currentConfig.id, currentConfig.gramsAvailable, currentConfig.configuredPortionGrams);
-      //     currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
-      //     configs[i] = currentConfig;
-      //     continue;
-      //   }
-      //   currentConfig.dispensedTimes += 1;
-      //   currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
-      //   currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
-      //   currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
-      //   configs[i] = currentConfig;
-      //   sendCurl(currentConfig);
-      //   char *dispenserMsg = getMessageConfig(currentConfig);
-      //   debug_os("Sync send to dispense: %s", dispenserMsg);
-      //   mqtt_sn_pub("/dispensar", dispenserMsg, false, 0);
-      //   continue;
-      // }
-      // currentConfig.seccondsToDispenseDecrement -= 1;
-      // configs[i] = currentConfig;
+      if (currentConfig.seccondsToDispenseDecrement == 0) {
+        // if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
+        //   debug_os("\n\nConfig id: %d doesn't have sufficient grams available %d to configured portion %d",
+        //     currentConfig.id, currentConfig.gramsAvailable, currentConfig.configuredPortionGrams);
+        //   currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
+        //   configs[i] = currentConfig;
+        //   continue;
+        // }
+        // currentConfig.dispensedTimes += 1;
+        // currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
+        // currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
+        // currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
+        // configs[i] = currentConfig;
+        // sendCurl(currentConfig);
+        // char *dispenserMsg = getMessageConfig(currentConfig);
+        // debug_os("Sync send to dispense: %s", dispenserMsg);
+        // mqtt_sn_pub("/dispensar", dispenserMsg, false, 0);
+        // continue;
+      }
+      currentConfig.seccondsToDispenseDecrement -= 1;
+      configs[i] = currentConfig;
     }
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
