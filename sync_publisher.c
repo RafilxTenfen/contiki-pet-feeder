@@ -267,11 +267,11 @@ PROCESS_THREAD(init_system_process, ev, data) {
         currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
         currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
         configs[i] = currentConfig;
-        sendCurl(currentConfig);
-        // char *dispenserMsg = getMessageConfig(currentConfig);
-        // debug_os("Sync send to dispense: %s", dispenserMsg);
-        // mqtt_sn_pub("/dispensar", dispenserMsg, false, 0);
-        // continue;
+        // sendCurl(currentConfig);
+        char *dispenserMsg = getMessageConfig(currentConfig);
+        debug_os("Sync send to dispense: %s", dispenserMsg);
+        mqtt_sn_pub("/dispensar", dispenserMsg, false, 0);
+        continue;
       }
       currentConfig.seccondsToDispenseDecrement -= 1;
       configs[i] = currentConfig;
