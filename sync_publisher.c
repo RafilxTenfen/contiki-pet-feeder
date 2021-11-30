@@ -54,7 +54,7 @@ typedef struct Config {
 } Config;
 
 char* getJsonConfig(struct Config config) {
-  char *postmsg = malloc (sizeof (char) * 10000);
+  char *postmsg = malloc (sizeof (char) * 1000);
   sprintf(postmsg, "{\n \"id\": \"%d\",\n \"dispensedTimes\": %d,\n \"gramsAvailable\": %d,\n \"lastTimeDispensed\": \"%ld\",\n \"configuredPortionGrams\": %d,\n \"sizeGrams\": %d,\n \"animal\": \"%s\"\n}", config.id,
     config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
     config.configuredPortionGrams, config.sizeGrams, config.animal);
@@ -72,10 +72,7 @@ char* getMessageConfig(struct Config config) {
 void sendCurl(struct Config config) {
   char *postthis = getJsonConfig(config);
   char *command = malloc (sizeof (char) * 10000);
-  sprintf(command, "curl --header \"Content-Type: application/json\" \
-                                                                             --request POST \
-                                                                             --data '%s' \
-                                                                             https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app", postthis);
+  sprintf(command, "curl --header \"Content-Type: application/json\" --request POST --data '%s' https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app", postthis);
   debug_os("\ncurl command: %s", command);
   // system(command);
 }
