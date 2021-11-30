@@ -235,7 +235,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   etimer_set(&periodic_timer, 5*CLOCK_SECOND);
 
 
-  debug_os("Node ID: %d, Will send config", node_id);
+  // debug_os("Node ID: %d, Will send config", node_id);
   int j;
   for (j = 0; j < 3; j++) {
     Config currentConfig = configs[j];
@@ -243,7 +243,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     debug_os("Sync send Config: %s", currentConfig.animal);
     mqtt_sn_pub_send("/config", configMsg, true, 0);
   }
-  debug_os("Node ID: %d, Finish sending config", node_id);
+  // debug_os("Node ID: %d, Finish sending config", node_id);
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
 
   while(1) {
