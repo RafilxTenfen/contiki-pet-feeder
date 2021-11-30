@@ -47,7 +47,7 @@ typedef struct Config {
   int seccondsToDispense;
   int seccondsToDispenseDecrement;
   int gramsAvailable;
-  time_t lastTimeDispensed;
+  int lastTimeDispensed;
   int configuredPortionGrams;
   int sizeGrams;
   char* animal;
