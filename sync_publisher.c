@@ -207,14 +207,14 @@ void init_broker(void) {
   size_t i;
   for(i=0;i<ss(topics_mqtt);i++)
     all_topics[i] = topics_mqtt[i];
-  all_topics[i] = topic_hw;
+  // all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
                      all_topics,
-                     4,
+                     ss(all_topics),
                      mqtt_sn_callback);
 
-  mqtt_sn_sub(topic_hw, 0);
+  // mqtt_sn_sub(topic_hw, 0);
   // mqtt_sn_sub("/config", 0);
   // mqtt_sn_sub("/dispensar", 0);
 }
@@ -267,7 +267,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
         currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
         currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
         configs[i] = currentConfig;
-        // sendCurl(currentConfig);
+        sendCurl(currentConfig);
         char *dispenserMsg = getMessageConfig(currentConfig);
         debug_os("Sync send to dispense: %s", dispenserMsg);
         mqtt_sn_pub_send("/dispensar", dispenserMsg, true, 0);

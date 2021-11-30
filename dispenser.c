@@ -119,7 +119,7 @@ void init_broker(void) {
   size_t i;
   for(i=0;i<ss(topics_mqtt);i++)
     all_topics[i] = topics_mqtt[i];
-  all_topics[i] = topic_hw;
+  // all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
                      all_topics,
@@ -127,7 +127,7 @@ void init_broker(void) {
                      mqtt_sn_callback);
 
   // mqtt_sn_sub(topic_hw, 0);
-  mqtt_sn_sub_send("/config", 0);
+  mqtt_sn_sub_send("/config", 1);
   mqtt_sn_sub_send("/dispensar", 0);
 }
 
