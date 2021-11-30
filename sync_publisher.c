@@ -191,7 +191,7 @@ void init_broker(void) {
           linkaddr_node_addr.u8[2],linkaddr_node_addr.u8[3],
           linkaddr_node_addr.u8[4],linkaddr_node_addr.u8[5],
           linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
-  sprintf(topic_hw,"Hello addr:%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
+  sprintf(topic_hw,"node addr:%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
   debug_os("SYNC Initializing init_broker the MQTT_SN_DEMO, %s", topic_hw);
 
   mqtt_sn_connection.client_id     = device_id;
@@ -205,19 +205,19 @@ void init_broker(void) {
 
   mqtt_sn_init();   // Inicializa alocação de eventos e a principal PROCESS_THREAD do MQTT-SN
 
-  size_t i;
-  for(i=0;i<ss(topics_mqtt);i++)
-    all_topics[i] = topics_mqtt[i];
+  // size_t i;
+  // for(i=0;i<ss(topics_mqtt);i++)
+  //   all_topics[i] = topics_mqtt[i];
   // all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
-                     all_topics,
-                     ss(all_topics),
+                     topics_mqtt,
+                     3,
                      mqtt_sn_callback);
 
   // mqtt_sn_sub(topic_hw, 0);
-  // mqtt_sn_sub("/config", 0);
-  // mqtt_sn_sub("/dispensar", 0);
+  mqtt_sn_sub_send("/config", 0);
+  mqtt_sn_sub_send("/dispensar", 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -251,7 +251,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     debug_os("Node ID: %d, Init While", node_id);
     PROCESS_WAIT_EVENT();
     // sprintf(pub_test,"%s",topic_hw);
-    // mqtt_sn_pub("/topic_1",pub_test,true,0);
+    mqtt_sn_pub("/topic_1","topicTest",true,0);
     int i = 0;
     for (i = 0; i < 3; i++) {
       Config currentConfig = configs[i];

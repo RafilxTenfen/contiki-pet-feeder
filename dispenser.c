@@ -147,11 +147,11 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&time_poll));
-    sprintf(pub_test,"%s",topic_hw);
-    mqtt_sn_pub("/topic_1",pub_test,true,0);
-      leds_on(LEDS_ALL);
+    // sprintf(pub_test,"%s",topic_hw);
+    mqtt_sn_pub("/topic_1","TestTopic",true,0);
     // debug_os("State MQTT - :%s",mqtt_sn_check_status_string());
     etimer_set(&time_poll, CLOCK_SECOND * 100);
+    leds_on(LEDS_ALL);
   }
   PROCESS_END();
 }
