@@ -124,7 +124,42 @@ static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
                                   "/dispensar",
                                   "/topic_1"};
-static struct Config* configs = malloc(sizeof(struct Config) * numberOfConfigs);
+struct Config dog = {
+  id: 3,
+  dispensedTimes: 0,
+  seccondsToDispense: 4,
+  seccondsToDispenseDecrement: 4,
+  gramsAvailable: 2500,
+  lastTimeDispensed: 1638116931,
+  configuredPortionGrams: 400,
+  sizeGrams: 3000,
+  animal: "Dog",
+};
+
+struct Config cat = {
+  id: 4,
+  dispensedTimes: 0,
+  seccondsToDispense: 10,
+  seccondsToDispenseDecrement: 10,
+  gramsAvailable: 1500,
+  lastTimeDispensed: 1638116931,
+  configuredPortionGrams: 250,
+  sizeGrams: 3000,
+  animal: "Cat",
+};
+
+struct Config cow = {
+  id: 5,
+  dispensedTimes: 0,
+  seccondsToDispense: 15,
+  seccondsToDispenseDecrement: 15,
+  gramsAvailable: 6000,
+  lastTimeDispensed: 1638116931,
+  configuredPortionGrams: 800,
+  sizeGrams: 10000,
+  animal: "Cow",
+};
+static struct Config configs[3] = {dog, cat, cow};
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
@@ -133,48 +168,18 @@ mqtt_sn_con_t mqtt_sn_connection;
 
 
 
-void* createConfig() {
-  long now = 1638116931;
-  struct Config dog = {
-    id: 3,
-    dispensedTimes: 0,
-    seccondsToDispense: 4,
-    seccondsToDispenseDecrement: 4,
-    gramsAvailable: 2500,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 400,
-    sizeGrams: 3000,
-    animal: "Dog",
-  };
-  configs[0] = dog;
+// void* createConfig() {
+//   long now = 1638116931;
 
-  struct Config cat = {
-    id: 4,
-    dispensedTimes: 0,
-    seccondsToDispense: 10,
-    seccondsToDispenseDecrement: 10,
-    gramsAvailable: 1500,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 250,
-    sizeGrams: 3000,
-    animal: "Cat",
-  };
-  configs[1] = cat;
+//   configs[0] = dog;
 
-  struct Config cow = {
-    id: 5,
-    dispensedTimes: 0,
-    seccondsToDispense: 15,
-    seccondsToDispenseDecrement: 15,
-    gramsAvailable: 6000,
-    lastTimeDispensed: now,
-    configuredPortionGrams: 800,
-    sizeGrams: 10000,
-    animal: "Cow",
-  };
-  configs[2] = cow;
-  return configs;
-}
+
+//   configs[1] = cat;
+
+
+//   configs[2] = cow;
+//   return configs;
+// }
 
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
