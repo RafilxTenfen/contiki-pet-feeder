@@ -116,19 +116,19 @@ void init_broker(void) {
 
   mqtt_sn_init();   // Inicializa alocação de eventos e a principal PROCESS_THREAD do MQTT-SN
 
-  size_t i;
-  for(i=0;i<ss(topics_mqtt);i++)
-    all_topics[i] = topics_mqtt[i];
+  // size_t i;
+  // for(i=0;i<ss(topics_mqtt);i++)
+  //   all_topics[i] = topics_mqtt[i];
   // all_topics[i] = topic_hw;
 
   mqtt_sn_create_sck(mqtt_sn_connection,
-                     all_topics,
-                     ss(all_topics),
+                     topics_mqtt,
+                     3,
                      mqtt_sn_callback);
 
   // mqtt_sn_sub(topic_hw, 0);
   mqtt_sn_sub_send("/config", 1);
-  mqtt_sn_sub_send("/dispensar", 0);
+  mqtt_sn_sub_send("/dispensar1", 0);
 }
 
 /*---------------------------------------------------------------------------*/
