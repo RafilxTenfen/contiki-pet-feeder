@@ -63,7 +63,7 @@ char* getJsonConfig(struct Config config) {
 
 char* getMessageConfig(struct Config config) {
   char *msg = malloc (sizeof (char) * 400);
-  sprintf(msg, "%d,%d,%d,%ld,%d,%d,%s", config.id,
+  sprintf(msg, "%d,%d,%d,%d,%d,%d,%s", config.id,
     config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
     config.configuredPortionGrams, config.sizeGrams, config.animal);
   return (char *) msg;
@@ -241,7 +241,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     Config currentConfig = configs[j];
     char *configMsg = getMessageConfig(currentConfig);
     debug_os("Sync send Config: %s", currentConfig.animal);
-    mqtt_sn_pub_send("/config", configMsg, 0);
+    mqtt_sn_pub_send("/config", configMsg, true, 0);
   }
   debug_os("Node ID: %d, Finish sending config", node_id);
 
@@ -270,7 +270,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
         // sendCurl(currentConfig);
         char *dispenserMsg = getMessageConfig(currentConfig);
         debug_os("Sync send to dispense: %s", dispenserMsg);
-        mqtt_sn_pub_send("/dispensar", dispenserMsg, 0);
+        mqtt_sn_pub_send("/dispensar", dispenserMsg, true, 0);
         continue;
       }
       currentConfig.seccondsToDispenseDecrement -= 1;
