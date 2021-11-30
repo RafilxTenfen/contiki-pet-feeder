@@ -124,42 +124,41 @@ static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
                                   "/dispensar",
                                   "/topic_1"};
-struct Config dog = {
-  id: 3,
-  dispensedTimes: 0,
-  seccondsToDispense: 4,
-  seccondsToDispenseDecrement: 4,
-  gramsAvailable: 2500,
-  lastTimeDispensed: 1638116931,
-  configuredPortionGrams: 400,
-  sizeGrams: 3000,
-  animal: "Dog",
+static Config configs[3] = {
+  {
+    id: 3,
+    dispensedTimes: 0,
+    seccondsToDispense: 4,
+    seccondsToDispenseDecrement: 4,
+    gramsAvailable: 2500,
+    lastTimeDispensed: 1638116931,
+    configuredPortionGrams: 400,
+    sizeGrams: 3000,
+    animal: "Dog",
+  }, {
+    id: 4,
+    dispensedTimes: 0,
+    seccondsToDispense: 10,
+    seccondsToDispenseDecrement: 10,
+    gramsAvailable: 1500,
+    lastTimeDispensed: 1638116931,
+    configuredPortionGrams: 250,
+    sizeGrams: 3000,
+    animal: "Cat",
+  }, {
+    id: 5,
+    dispensedTimes: 0,
+    seccondsToDispense: 15,
+    seccondsToDispenseDecrement: 15,
+    gramsAvailable: 6000,
+    lastTimeDispensed: 1638116931,
+    configuredPortionGrams: 800,
+    sizeGrams: 10000,
+    animal: "Cow",
+  }
 };
 
-struct Config cat = {
-  id: 4,
-  dispensedTimes: 0,
-  seccondsToDispense: 10,
-  seccondsToDispenseDecrement: 10,
-  gramsAvailable: 1500,
-  lastTimeDispensed: 1638116931,
-  configuredPortionGrams: 250,
-  sizeGrams: 3000,
-  animal: "Cat",
-};
 
-struct Config cow = {
-  id: 5,
-  dispensedTimes: 0,
-  seccondsToDispense: 15,
-  seccondsToDispenseDecrement: 15,
-  gramsAvailable: 6000,
-  lastTimeDispensed: 1638116931,
-  configuredPortionGrams: 800,
-  sizeGrams: 10000,
-  animal: "Cow",
-};
-static struct Config configs[3] = {dog, cat, cow};
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
