@@ -127,8 +127,8 @@ void init_broker(void) {
                      mqtt_sn_callback);
 
   // mqtt_sn_sub(topic_hw, 0);
-  mqtt_sn_sub("/config", 0);
-  mqtt_sn_sub("/dispensar", 0);
+  mqtt_sn_sub_send("/config", 0);
+  mqtt_sn_sub_send("/dispensar", 0);
 }
 
 /*---------------------------------------------------------------------------*/

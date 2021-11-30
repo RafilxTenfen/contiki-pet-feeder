@@ -71,8 +71,8 @@ char* getMessageConfig(struct Config config) {
 
 void sendCurl(struct Config config) {
   char *postthis = getJsonConfig(config);
-  // char *command = malloc (sizeof (char) * 10000);
-  // sprintf(command, "curl --header \"Content-Type: application/json\" --request POST --data '%s' https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app", postthis);
+  char *command = malloc (sizeof (char) * 10000);
+  sprintf(command, "curl --header \"Content-Type: application/json\" --request POST --data '%s' https://animalfeeder-api-2wmdhpbuoq-uc.a.run.app", postthis);
   debug_os("\ncurl command: %s", postthis);
   // system(command);
 }
