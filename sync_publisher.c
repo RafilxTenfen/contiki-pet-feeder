@@ -265,11 +265,11 @@ PROCESS_THREAD(init_system_process, ev, data) {
           configs[i] = currentConfig;
           continue;
         }
-        // currentConfig.dispensedTimes += 1;
-        // currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
-        // currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
-        // currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
-        // configs[i] = currentConfig;
+        currentConfig.dispensedTimes += 1;
+        currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
+        currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
+        currentConfig.gramsAvailable -= currentConfig.configuredPortionGrams;
+        configs[i] = currentConfig;
         // sendCurl(currentConfig);
         // char *dispenserMsg = getMessageConfig(currentConfig);
         // debug_os("Sync send to dispense: %s", dispenserMsg);
