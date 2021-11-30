@@ -112,6 +112,7 @@ void sendCurl(struct Config config) {
 //   }
 // }
 
+#define numberOfConfigs 3
 static uint16_t udp_port = 1884;
 static uint16_t keep_alive = 5;
 static uint16_t broker_address[] = {0xaaaa, 0, 0, 0, 0, 0, 0, 0x1};
@@ -123,19 +124,16 @@ static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
                                   "/dispensar",
                                   "/topic_1"};
-static struct Config* configs;
+static struct Config* configs = malloc(sizeof(struct Config) * numberOfConfigs);
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
 
 mqtt_sn_con_t mqtt_sn_connection;
 
-#define numberOfConfigs 3
 
 
 void* createConfig() {
-  struct Config* allConfigs;
-  allConfigs = malloc(sizeof(struct Config) * numberOfConfigs);
   long now = 1638116931;
   struct Config dog = {
     id: 3,
@@ -148,7 +146,7 @@ void* createConfig() {
     sizeGrams: 3000,
     animal: "Dog",
   };
-  allConfigs[0] = dog;
+  configs[0] = dog;
 
   struct Config cat = {
     id: 4,
@@ -161,7 +159,7 @@ void* createConfig() {
     sizeGrams: 3000,
     animal: "Cat",
   };
-  allConfigs[1] = cat;
+  configs[1] = cat;
 
   struct Config cow = {
     id: 5,
@@ -174,8 +172,8 @@ void* createConfig() {
     sizeGrams: 10000,
     animal: "Cow",
   };
-  allConfigs[2] = cow;
-  return allConfigs;
+  configs[2] = cow;
+  return configs;
 }
 
 void mqtt_sn_callback(char *topic, char *message){
@@ -227,7 +225,6 @@ AUTOSTART_PROCESSES(&init_system_process);
 
 PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
-  configs = createConfig();
 
   debug_os("Initializing SYNC PROCESS_THREAD the MQTT_SN_DEMO");
   init_broker();
