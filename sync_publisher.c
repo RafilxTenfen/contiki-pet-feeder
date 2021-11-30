@@ -54,11 +54,11 @@ typedef struct Config {
 } Config;
 
 char* getJsonConfig(struct Config config) {
-  char *postmsg = malloc (sizeof (char) * 1000);
-  sprintf(postmsg, "{\n \"id\": \"%d\",\n \"dispensedTimes\": %d,\n \"gramsAvailable\": %d,\n \"lastTimeDispensed\": \"%ld\",\n \"configuredPortionGrams\": %d,\n \"sizeGrams\": %d,\n \"animal\": \"%s\"\n}", config.id,
-    config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
+  char *postmsg = malloc (sizeof (char) * 2000);
+  sprintf(postmsg, "{ \"id\": \"%d\", \"dispensedTimes\": %d, \"gramsAvailable\": %d, \"lastTimeDispensed\": \"%d\", \"configuredPortionGrams\": %d, \"sizeGrams\": %d, \"animal\": \"%s\"}",
+    config.id, config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
     config.configuredPortionGrams, config.sizeGrams, config.animal);
-  return (char *) postmsg;
+  return postmsg;
 };
 
 char* getMessageConfig(struct Config config) {
@@ -128,7 +128,7 @@ static Config configs[3] = {
     seccondsToDispense: 4,
     seccondsToDispenseDecrement: 4,
     gramsAvailable: 2500,
-    lastTimeDispensed: 1638116931,
+    lastTimeDispensed: 56465,
     configuredPortionGrams: 400,
     sizeGrams: 3000,
     animal: "Dog",
@@ -138,7 +138,7 @@ static Config configs[3] = {
     seccondsToDispense: 10,
     seccondsToDispenseDecrement: 10,
     gramsAvailable: 1500,
-    lastTimeDispensed: 1638116931,
+    lastTimeDispensed: 56465,
     configuredPortionGrams: 250,
     sizeGrams: 3000,
     animal: "Cat",
@@ -148,7 +148,7 @@ static Config configs[3] = {
     seccondsToDispense: 15,
     seccondsToDispenseDecrement: 15,
     gramsAvailable: 6000,
-    lastTimeDispensed: 1638116931,
+    lastTimeDispensed: 56465,
     configuredPortionGrams: 800,
     sizeGrams: 10000,
     animal: "Cow",
