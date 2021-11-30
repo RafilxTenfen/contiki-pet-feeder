@@ -242,11 +242,9 @@ PROCESS_THREAD(init_system_process, ev, data) {
   int j;
   for (j = 0; j < 3; j++) {
     Config currentConfig = configs[j];
-    // char *configMsg = getMessageConfig(currentConfig);
-    // debug_os("Sync send Config: %s", currentConfig.animal);
-    // // config.dispensedTimes, config.gramsAvailable, config.lastTimeDispensed,
-    // // config.configuredPortionGrams, config.sizeGrams, config.animal);
-    // mqtt_sn_pub("/config", configMsg, true, 0);
+    char *configMsg = getMessageConfig(currentConfig);
+    debug_os("Sync send Config: %s", currentConfig.animal);
+    mqtt_sn_pub("/config", configMsg, true, 0);
   }
   debug_os("Node ID: %d, Finish sending config", node_id);
 
