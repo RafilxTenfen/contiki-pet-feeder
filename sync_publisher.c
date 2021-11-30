@@ -258,13 +258,13 @@ PROCESS_THREAD(init_system_process, ev, data) {
     for (i = 0; i < 3; i++) {
       Config currentConfig = configs[i];
       if (currentConfig.seccondsToDispenseDecrement == 0) {
-        // if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
-        //   debug_os("\n\nConfig id: %d doesn't have sufficient grams available %d to configured portion %d",
-        //     currentConfig.id, currentConfig.gramsAvailable, currentConfig.configuredPortionGrams);
-        //   currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
-        //   configs[i] = currentConfig;
-        //   continue;
-        // }
+        if (currentConfig.gramsAvailable < currentConfig.configuredPortionGrams) {
+          debug_os("\n\nConfig id: %d doesn't have sufficient grams available %d to configured portion %d",
+            currentConfig.id, currentConfig.gramsAvailable, currentConfig.configuredPortionGrams);
+          currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
+          configs[i] = currentConfig;
+          continue;
+        }
         // currentConfig.dispensedTimes += 1;
         // currentConfig.seccondsToDispenseDecrement = currentConfig.seccondsToDispense;
         // currentConfig.lastTimeDispensed += currentConfig.seccondsToDispense;
