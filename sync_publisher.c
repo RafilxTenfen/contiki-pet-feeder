@@ -128,7 +128,7 @@ static Config configs[3] = {
     seccondsToDispense: 4,
     seccondsToDispenseDecrement: 4,
     gramsAvailable: 2500,
-    lastTimeDispensed: 56465,
+    lastTimeDispensed: 0,
     configuredPortionGrams: 400,
     sizeGrams: 3000,
     animal: "Dog",
@@ -138,7 +138,7 @@ static Config configs[3] = {
     seccondsToDispense: 10,
     seccondsToDispenseDecrement: 10,
     gramsAvailable: 1500,
-    lastTimeDispensed: 56465,
+    lastTimeDispensed: 0,
     configuredPortionGrams: 250,
     sizeGrams: 3000,
     animal: "Cat",
@@ -148,7 +148,7 @@ static Config configs[3] = {
     seccondsToDispense: 15,
     seccondsToDispenseDecrement: 15,
     gramsAvailable: 6000,
-    lastTimeDispensed: 56465,
+    lastTimeDispensed: 0,
     configuredPortionGrams: 800,
     sizeGrams: 10000,
     animal: "Cow",
@@ -279,7 +279,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     }
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-    debug_os("Node ID: %d, Finish While", node_id);
+    // debug_os("Node ID: %d, Finish While", node_id);
   }
 
   // while (1) {
