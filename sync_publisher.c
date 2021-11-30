@@ -180,6 +180,7 @@ mqtt_sn_con_t mqtt_sn_connection;
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s",topic,message);
+  debug_os("SYNC RECEIVED mqtt_sn_callback");
 }
 
 void init_broker(void) {
@@ -246,9 +247,9 @@ PROCESS_THREAD(init_system_process, ev, data) {
   debug_os("Node ID: %d, Finish sending config", node_id);
 
   while(1) {
-    // PROCESS_WAIT_EVENT();
     etimer_set(&periodic_timer, 1*CLOCK_SECOND);
     debug_os("Node ID: %d, Init While", node_id);
+    PROCESS_WAIT_EVENT();
     // sprintf(pub_test,"%s",topic_hw);
     // mqtt_sn_pub("/topic_1",pub_test,true,0);
     int i = 0;
