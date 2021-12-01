@@ -208,7 +208,8 @@ void init_broker(void) {
 
 /*---------------------------------------------------------------------------*/
 PROCESS(send_config, "[No Sync] Send Config");
-AUTOSTART_PROCESSES(&send_config);
+// AUTOSTART_PROCESSES(&send_config);
+process_start(&send_config, NULL);
 PROCESS(init_system_process, "[No Sync] Dispenser");
 AUTOSTART_PROCESSES(&init_system_process);
 /*---------------------------------------------------------------------------*/
