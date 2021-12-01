@@ -180,6 +180,7 @@ mqtt_sn_con_t mqtt_sn_connection;
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s",topic,message);
+  debug_mqtt("SYNC RECEIVED mqtt_sn_callback iha");
   debug_os("SYNC RECEIVED mqtt_sn_callback");
 }
 
