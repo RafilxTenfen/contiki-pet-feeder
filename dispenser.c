@@ -51,7 +51,7 @@ static char     pub_test[20];
 static char     device_id[17];
 static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
-                                  "/dispensar",
+                                  "/dispenser",
                                   "/topic_1"};
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
@@ -69,8 +69,8 @@ void mqtt_sn_callback(char *topic, char *message){
 
   leds_on(LEDS_ALL);
 
-  if (strcmp(topic, "/config") != 0 && strcmp(topic, "/dispensar") != 0) {
-    debug_os("IS NOT CONFIG OR DISPENSAR");
+  if (strcmp(topic, "/config") != 0 && strcmp(topic, "/dispenser") != 0) {
+    debug_os("IS NOT CONFIG OR DISPENSER");
     return;
   }
 
@@ -88,7 +88,7 @@ void mqtt_sn_callback(char *topic, char *message){
     printf("\n\nReceived Conf %s", message);
     return;
   }
-  if (strcmp(topic, "/dispensar") != 0) {
+  if (strcmp(topic, "/dispenser") != 0) {
     printf("\n\nIt`s going to dispense food %s", message);
     debug_os("GO DISPENSER ID: %d, Receive MSG: %s, Topic: %s", node_id, message, topic);
     return;
@@ -128,7 +128,7 @@ void init_broker(void) {
 
   // mqtt_sn_sub(topic_hw, 0);
   mqtt_sn_sub_send("/config", 1);
-  mqtt_sn_sub_send("/dispensar1", 0);
+  mqtt_sn_sub_send("/dispenser1", 0);
 }
 
 /*---------------------------------------------------------------------------*/

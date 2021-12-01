@@ -119,7 +119,7 @@ static struct   etimer periodic_timer;
 static char     device_id[17];
 static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/config",
-                                  "/dispensar",
+                                  "/dispenser",
                                   "/topic_1"};
 static Config configs[3] = {
   {
@@ -163,20 +163,6 @@ static Config configs[3] = {
 mqtt_sn_con_t mqtt_sn_connection;
 
 
-
-// void* createConfig() {
-//   long now = 1638116931;
-
-//   configs[0] = dog;
-
-
-//   configs[1] = cat;
-
-
-//   configs[2] = cow;
-//   return configs;
-// }
-
 void mqtt_sn_callback(char *topic, char *message){
   printf("\nMessage received:");
   printf("\nTopic:%s Message:%s",topic,message);
@@ -216,23 +202,40 @@ void init_broker(void) {
                      mqtt_sn_callback);
 
   // mqtt_sn_sub(topic_hw, 0);
-  mqtt_sn_sub_send("/config", 0);
-  mqtt_sn_sub_send("/dispensar", 0);
+  mqtt_sn_sub("/config", 0);
+  mqtt_sn_sub("/dispenser", 0);
 }
 
 /*---------------------------------------------------------------------------*/
 PROCESS(init_system_process, "[Contiki-OS] Initializing Sync node");
 AUTOSTART_PROCESSES(&init_system_process);
+AUTOSTART_PROCESSES(&send_config);
 /*---------------------------------------------------------------------------*/
+PROCESS_THREAD(send_config, ev, data) {
+  PROCESS_BEGIN();
+  init_broker();
+  debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
+  debug_os("Initializing send_config");
+  int j;
+  for (j = 0; j < 3; j++) {
+    Config currentConfig = configs[j];
+    char *configMsg = getMessageConfig(currentConfig);
+    debug_os("Sync send Config: %s", currentConfig.animal);
+    mqtt_sn_pub_send("/config", configMsg, true, 0);
+  }
+  debug_os("Finishing send_config");
+  PROCESS_EXIT();
+}
+
 
 PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
-
-  debug_os("Initializing SYNC PROCESS_THREAD the MQTT_SN_DEMO");
   init_broker();
+  debug_os("Initializing SYNC PROCESS_THREAD the MQTT_SN_DEMO");
+
   debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
 
-  etimer_set(&periodic_timer, 5*CLOCK_SECOND);
+  etimer_set(&periodic_timer, 1*CLOCK_SECOND);
 
 
   // debug_os("Node ID: %d, Will send config", node_id);
@@ -247,7 +250,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
 
   while(1) {
-    etimer_set(&periodic_timer, 1*CLOCK_SECOND);
+    // etimer_set(&periodic_timer, 1*CLOCK_SECOND);
     // debug_os("Node ID: %d, Init While", node_id);
     // PROCESS_WAIT_EVENT();
     // sprintf(pub_test,"%s",topic_hw);
@@ -271,7 +274,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
         // sendCurl(currentConfig);
         char *dispenserMsg = getMessageConfig(currentConfig);
         debug_os("Sync send to dispense: %s", dispenserMsg);
-        mqtt_sn_pub_send("/dispensar", dispenserMsg, true, 0);
+        mqtt_sn_pub_send("/dispenser", dispenserMsg, true, 0);
         continue;
       }
       currentConfig.seccondsToDispenseDecrement -= 1;
