@@ -171,7 +171,7 @@ void mqtt_sn_callback(char *topic, char *message){
 
 void init_broker(void) {
 
-  char *all_topics[ss(topics_mqtt)+1];
+  // char *all_topics[ss(topics_mqtt)+1];
   sprintf(device_id,"%02X%02X%02X%02X%02X%02X%02X%02X",
           linkaddr_node_addr.u8[0],linkaddr_node_addr.u8[1],
           linkaddr_node_addr.u8[2],linkaddr_node_addr.u8[3],
@@ -207,9 +207,10 @@ void init_broker(void) {
 }
 
 /*---------------------------------------------------------------------------*/
-PROCESS(init_system_process, "[Contiki-OS] Initializing Sync node");
-AUTOSTART_PROCESSES(&init_system_process);
+PROCESS(init_system_process, "[No Sync] Send Config");
 AUTOSTART_PROCESSES(&send_config);
+PROCESS(init_system_process, "[No Sync] Dispenser");
+// AUTOSTART_PROCESSES(&init_system_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(send_config, ev, data) {
   PROCESS_BEGIN();
