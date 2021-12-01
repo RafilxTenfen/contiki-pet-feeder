@@ -208,14 +208,12 @@ void init_broker(void) {
 
 /*---------------------------------------------------------------------------*/
 PROCESS(send_config, "[No Sync] Send Config");
-// AUTOSTART_PROCESSES(&send_config);
-process_start(&send_config, NULL);
+
 PROCESS(init_system_process, "[No Sync] Dispenser");
 AUTOSTART_PROCESSES(&init_system_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(send_config, ev, data) {
   PROCESS_BEGIN();
-  init_broker();
   debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
   debug_os("Initializing send_config");
   int j;
@@ -233,6 +231,7 @@ PROCESS_THREAD(send_config, ev, data) {
 PROCESS_THREAD(init_system_process, ev, data) {
   PROCESS_BEGIN();
   init_broker();
+  process_start(&send_config, NULL);
   debug_os("Initializing SYNC PROCESS_THREAD the MQTT_SN_DEMO");
 
   debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
@@ -241,13 +240,13 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
 
   // debug_os("Node ID: %d, Will send config", node_id);
-  int j;
-  for (j = 0; j < 3; j++) {
-    Config currentConfig = configs[j];
-    char *configMsg = getMessageConfig(currentConfig);
-    debug_os("Sync send Config: %s", currentConfig.animal);
-    mqtt_sn_pub_send("/config", configMsg, true, 0);
-  }
+  // int j;
+  // for (j = 0; j < 3; j++) {
+  //   Config currentConfig = configs[j];
+  //   char *configMsg = getMessageConfig(currentConfig);
+  //   debug_os("Sync send Config: %s", currentConfig.animal);
+  //   mqtt_sn_pub_send("/config", configMsg, true, 0);
+  // }
   // debug_os("Node ID: %d, Finish sending config", node_id);
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
 
