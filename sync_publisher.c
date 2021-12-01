@@ -232,7 +232,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   init_broker();
   debug_os("Node ID: %d, Device ID: %s", node_id, device_id);
 
-  etimer_set(&periodic_timer, 5*CLOCK_SECOND);
+  etimer_set(&periodic_timer, 1*CLOCK_SECOND);
 
 
   // debug_os("Node ID: %d, Will send config", node_id);
@@ -241,14 +241,13 @@ PROCESS_THREAD(init_system_process, ev, data) {
     Config currentConfig = configs[j];
     char *configMsg = getMessageConfig(currentConfig);
     debug_os("Sync send Config: %s", currentConfig.animal);
-    mqtt_sn_pub_send("/config", configMsg, true, 0);
+    mqtt_sn_pub("/config", configMsg, true, 0);
   }
   // debug_os("Node ID: %d, Finish sending config", node_id);
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
 
   while(1) {
-    etimer_set(&periodic_timer, 1*CLOCK_SECOND);
-    // debug_os("Node ID: %d, Init While", node_id);
+    debug_os("Node ID: %d, Init While", node_id);
     // PROCESS_WAIT_EVENT();
     // sprintf(pub_test,"%s",topic_hw);
     mqtt_sn_pub("/topic_1","topicTest",true,0);
@@ -271,7 +270,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
         // sendCurl(currentConfig);
         char *dispenserMsg = getMessageConfig(currentConfig);
         debug_os("Sync send to dispense: %s", dispenserMsg);
-        mqtt_sn_pub_send("/dispensar", dispenserMsg, true, 0);
+        mqtt_sn_pub("/dispensar", dispenserMsg, true, 0);
         continue;
       }
       currentConfig.seccondsToDispenseDecrement -= 1;
@@ -279,7 +278,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
     }
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-    // debug_os("Node ID: %d, Finish While", node_id);
+    debug_os("Node ID: %d, Finish While", node_id);
   }
 
   // while (1) {
